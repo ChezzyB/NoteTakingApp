@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const todoRoutes = require('.routes/todoRoutes');
+const noteRoutes = require('.routes/noteRoutes');
 const connectDB = require('.config/db');
 
 //Load environment variables
@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 connectDB();
 
 //Routes
-app.use('/api/todos',todoRoutes);
+app.use('/api/notes',noteRoutes);
 
 //Start the server
 const PORT = process.env.PORT || 5000;
