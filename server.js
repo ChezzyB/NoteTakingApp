@@ -5,7 +5,7 @@ const noteRoutes = require('.routes/noteRoutes');
 const connectDB = require('.config/db');
 
 //Load environment variables
-require ('dotenv').config();
+require ('dotenv/lib/main').config();
 
 //Initialize the app
 const app = express();
