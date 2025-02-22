@@ -5,14 +5,14 @@ const noteRoutes = require('.backend/routes/noteRoutes');
 const connectDB = require('.backend/config/db');
 
 //Load environment variables
-require ('dotenv/lib/main').config();
+require ('dotenv').config();
 
 //Initialize the app
 const app = express();
 
 //Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors()); // allows front end to talk with backend
+app.use(bodyParser.json()); // allows json responses with requests and responses
 
 //Connect to MongoDB
 connectDB();

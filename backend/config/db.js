@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-//Connect to MongoDB using the connenction string from environment variables
+//Connect to MongoDB using the connenction string from the .env variables
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGODB_URI, {
