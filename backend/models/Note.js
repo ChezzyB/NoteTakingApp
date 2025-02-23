@@ -5,6 +5,9 @@ const noteSchema = new mongoose.Schema({
     //Title of note
     title: {
         type: String,
+        required: [true, 'Text contents cannot be empty'], //Validation for: Contents must be present
+        minlength: [1,'Text title cannot be empty'], //Validation for: Minimum length
+        maxlength: [40, 'Text title must be less than 40 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
     //Content in the note

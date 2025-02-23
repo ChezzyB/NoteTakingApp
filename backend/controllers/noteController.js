@@ -3,14 +3,13 @@ const Note = require('../models/Note');
 //Create Note
 const createNote = async (req, res) => {
     try {
-        const {title, contents} = req.body;
+        const {title, contents} = req.body; // Data from front end
         const newNote = new Note({
             title, 
             contents,
-            completed: false,
         });
-        await newNote.save();
-        res.status(201).json(newNote);
+        await newNote.save(); //save to database
+        res.status(201).json(newNote);//create status to send back to the user in json format
     } catch (err) {
         if (err.name === 'ValidationError') {
             // Validation error handling
@@ -21,7 +20,7 @@ const createNote = async (req, res) => {
 };
 
 //Get all Notes
-const getNote = async (req, res) => {
+const getNotes = async (req, res) => {
     try {
         const notes = await Note.find(); // Fetch all notes from database
         res.status(200).json(todos);
@@ -82,7 +81,7 @@ const deleteNote = async (req, res) => {
 
 module.exports = {
     createNote,
-    getNote,
+    getNotes,
     getNoteById,
     updateNote,
     deleteNote,
