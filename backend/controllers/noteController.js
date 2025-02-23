@@ -51,7 +51,7 @@ const updateNote = async (req, res) => {
         const note = await Note.findByIdAndUpdate(
             id,
             {title, description, completed},
-            {new: true}
+            {new: true, runValidators: true} //runValidators ensures validation while updating
         );
         if (!note) {
             return res.status(404).json({error: 'Note not found'});
