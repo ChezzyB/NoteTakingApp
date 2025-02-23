@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const noteRoutes = require('.backend/routes/noteRoutes');
-const connectDB = require('.backend/config/db');
+const noteRoutes = require('./routes/noteRoutes');
+const connectDB = require('./config/db');
 
 //Load environment variables
 require ('dotenv').config();

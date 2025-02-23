@@ -23,13 +23,13 @@ const createNote = async (req, res) => {
 const getNotes = async (req, res) => {
     try {
         const notes = await Note.find(); // Fetch all notes from database
-        res.status(200).json(todos);
+        res.status(200).json(notes);
     } catch (err) {
         res.status(500).json({error: 'Server error'});
     }
 };
 
-// Get a specific Todo by ID
+// Get a specific Note by ID
 const getNoteById = async (req, res) => {
     try {
         const {id} = req.params;
@@ -47,10 +47,10 @@ const getNoteById = async (req, res) => {
 const updateNote = async (req, res) => {
     try {
         const {id} = req.params;
-        const {title, description, completed} = req.body;
+        const {title, contents} = req.body;
         const note = await Note.findByIdAndUpdate(
             id,
-            {title, description, completed},
+            {title, contents},
             {new: true, runValidators: true} //runValidators ensures validation while updating
         );
         if (!note) {
@@ -68,7 +68,7 @@ const updateNote = async (req, res) => {
 // Delete Note
 const deleteNote = async (req, res) => {
     try {
-        const {id} = reportError.params;
+        const {id} = req.params;
         const note = await Note.findByIdAndDelete(id);
         if (!note) {
             return res.status(404).json({error: 'Note not found'});
