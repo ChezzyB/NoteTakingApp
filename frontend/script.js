@@ -13,19 +13,30 @@ function renderNotes(notes) {
 
     notes.forEach(note => {
         const li = document.createElement('li');
-        //li.classList.toggle('completed',note.completed);
 
         // Create span for the title
-        const span = document.createElement('span');
-        span.textContent = note.title
+        const spanTitle = document.createElement('span');
+        spanTitle.textContent = note.title
+
+        // Create span for the title
+        const spanContents = document.createElement('span');
+        spanContents.textContent = note.contents
+
 
         //Create the delete button
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
         deleteButton.onclick = () => deleteNote(note._id);
 
+        //Create the delete button
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.onclick = () => editNote(note._id, note.title, note.contents);
+
         //Append elements to the list item
-        li.appendChild(span);
+        li.appendChild(spanTitle);
+        li.appendChild(spanContents);
+        li.appendChild(editButton);
         li.appendChild(deleteButton);
 
         //Append the list item to the note list
@@ -64,6 +75,28 @@ async function addNote(event) {
 async function deleteNote(id) {
     await fetch(`${apiUrl}/${id}`, {method : 'DELETE'});
     getNotes();
+}
+
+async function editNote(id, title, contents) {
+    //Hiding the add button and showing the save button
+    const addNoteButton = document.getElementById('addNoteButton');
+    addNoteButton.hidden = true;
+    const saveNoteButton = document.getElementById('saveNoteButton');
+    saveNoteButton.hidden = false;
+
+    //Giving the note id to the saveNoteButton so when it is pressed it can save that note
+    //document.getElementById("saveNoteButton").id = note._id);
+
+    //Setting the input fields to the selected note's title and contents to allow for user editing
+    document.getElementById("title").value = `${title}`;
+    document.getElementById("contents").value = `${contents}`;
+
+
+}
+
+async function saveNote(event){
+
+    
 }
 
 window.onload = getNotes();

@@ -22,7 +22,7 @@ connectDB();
 
 //Routes
 app.use('/api/notes',noteRoutes);
-app.use('/api/auths',authRoutes);
+//app.use('/api/auths',authRoutes);
 
 //Use of error reporter middleware
 app.use(errorHandler);
