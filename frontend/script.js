@@ -1,14 +1,19 @@
 // Program's purpose is to allow the user to make notes and save them in a persistent state
-const apiUrl = "http://localhost:5000/api/notes/"
+const apiNoteUrl = "http://localhost:5000/api/notes/";
+const apiAuthUrl = 'http://localhost:5000/api/auths';
 let editNoteID = "";
 
 async function getNotes(){
-    //Fetch all the notes from the database
-    const response = await fetch(apiUrl);
-    const notes = await response.json();
+    
+    if(document.title === 'Note')
+    {
+        //Fetch all the notes from the database
+        const response = await fetch(apiNoteUrl);
+        const notes = await response.json();
 
-    //Display all notes found in the database
-    renderNotes(notes);
+        //Display all notes found in the database
+        renderNotes(notes);
+    }
 }
 
 function renderNotes(notes) {
@@ -67,7 +72,7 @@ async function addNote(event) {
     //Saving this new note's Title and Contents in the Database
     try{
         if (title && contents) {
-            const response = await fetch(apiUrl, {
+            const response = await fetch(apiNoteUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({title, contents})
@@ -92,7 +97,7 @@ async function addNote(event) {
 
 async function deleteNote(id) {
     //Delete the selected note in the database using the given ID
-    await fetch(`${apiUrl}/${id}`, {method : 'DELETE'});
+    await fetch(`${apiNoteUrl}/${id}`, {method : 'DELETE'});
     getNotes();
 }
 
@@ -120,7 +125,7 @@ async function saveEditedNote(event){
     //Use the current note's ID to update it in the database
     try{
         if (title && contents && editNoteID) {
-            const response = await fetch(`${apiUrl}/${editNoteID}`, {
+            const response = await fetch(`${apiNoteUrl}/${editNoteID}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({title, contents})
@@ -147,7 +152,122 @@ async function saveEditedNote(event){
     
 }
 
-if (document.title === 'Note') {
-    apiUrl = "http://localhost:5000/api/notes/"
-    window.onload = getNotes();
-}
+// Check if token exists
+const checkAuth = () => {
+    const token = localStorage.getItem('token');
+    return token ? true : false;
+  };
+  
+  // Render buttons dynamically on the home page
+  if (document.title === 'Home') {
+    const authButtons = document.getElementById('auth-buttons');
+    if (checkAuth()) {
+      authButtons.innerHTML = `
+        <button onclick="logout()">Logout</button>
+      `;
+      fetchWelcomeMessage()
+      //Send the user to the notes page as they are now logged in
+      window.location.href = 'note.html';
+    } else {
+      authButtons.innerHTML = `
+        <a href="login.html"><button>Login</button></a>
+        <a href="register.html"><button>Register</button></a>
+      `;
+    }
+  }
+  
+  // Login functionality
+  if (document.title === 'Login') {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+  
+      // Replace with your backend API endpoint
+      const response = await fetch(`${apiAuthUrl}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+      const message = document.getElementById('message');
+      if (response.ok) {
+        localStorage.setItem('token', data.token);
+        message.textContent = 'Login successful! Redirecting...';
+        setTimeout(() => (window.location.href = 'index.html'), 1500);
+      } else {
+        message.textContent = data.error || 'Login failed.';
+      }
+    });
+  }
+  
+  // Register functionality
+  if (document.title === 'Register') {
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const email = document.getElementById('email').value;
+  
+      // Add a new user to the database
+      const response = await fetch(`${apiAuthUrl}/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, password, email }),
+      });
+  
+      const data = await response.json();
+      const message = document.getElementById('message');
+      if (response.ok) {
+        message.textContent = 'Registration successful! Redirecting to login...';
+        setTimeout(() => (window.location.href = 'login.html'), 1000);
+      } else {
+        message.textContent = data.error || 'Registration failed.';
+      }
+    });
+  }
+  
+  // Function to fetch the welcome message from the server and log the user in
+  async function fetchWelcomeMessage() {
+    
+    //Get the token from the client side storage
+    const token = localStorage.getItem('token');
+    
+    //Get the user's username to display in the welcome message
+    try {
+      const response = await fetch(`${apiAuthUrl}/welcome`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      //Bad fetch/Missing user will prevent the user from logging in
+      if (!response.ok) {
+        throw new Error('Authentication failed. Please log in again.');
+      }
+  
+      const data = await response.json();
+      alert(data.message); // Display the welcome message
+    } catch (error) {
+      alert(error.message);
+      // Redirect to login page if the token is invalid or expired
+      window.location.href = 'login.html';
+    }
+  };
+  
+  // Client-side logout function
+  const logout = () => {
+    // Remove the token from localStorage
+    localStorage.removeItem('token');
+  
+    // Optionally show a success message
+    alert('Logged out successfully!');
+  
+    // Redirect to the home or login page
+    window.location.href = 'index.html'; 
+  };
+
+
+window.onload = getNotes();

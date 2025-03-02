@@ -1,13 +1,16 @@
+//Load environment variables
+require ('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./config/db');
 const bodyParser = require('body-parser');
 const noteRoutes = require('./routes/noteRoutes'); //All Note operations
 const authRoutes = require('./routes/authRoutes'); //All Authorization operations
-const connectDB = require('./config/db');
+
 const {logRequests, errorHandler} = require('./middlewares/auth');
 
-//Load environment variables
-require ('dotenv').config();
+
 
 //Initialize the app
 const app = express();
@@ -22,7 +25,7 @@ connectDB();
 
 //Routes
 app.use('/api/notes',noteRoutes);
-//app.use('/api/auths',authRoutes);
+app.use('/api/auths',authRoutes);
 
 //Use of error reporter middleware
 app.use(errorHandler);

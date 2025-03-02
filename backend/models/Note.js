@@ -7,7 +7,7 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Text contents cannot be empty'], //Validation for: Contents must be present
         minlength: [1,'Text title cannot be empty'], //Validation for: Minimum length
-        maxlength: [40, 'Text title must be less than 40 characters long'], //Validation for: Maximum length
+        maxlength: [25, 'Text title must be less than 25 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
     //Content in the note
@@ -15,7 +15,7 @@ const noteSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Text contents cannot be empty'], //Validation for: Contents must be present
         minlength: [5,'Text contents must be over 5 characters long'], //Validation for: Minimum length
-        maxlength: [1000, 'Text contents must be less than 1000 characters long'], //Validation for: Maximum length
+        maxlength: [50, 'Text contents must be less than 50 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
 }, {timestamps: true}); //Automatically add createdAt and updatedAt timestamps
