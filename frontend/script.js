@@ -147,4 +147,7 @@ async function saveEditedNote(event){
     
 }
 
-window.onload = getNotes();
+if (document.title === 'Note') {
+    apiUrl = "http://localhost:5000/api/notes/"
+    window.onload = getNotes();
+}

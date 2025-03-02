@@ -1,24 +1,19 @@
 <!DOCTYPE html>
-<html land="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, intital-scale=1.0">
-        <title>Note Taking App</title>
-        <link rel="stylesheet" href="style.css">
-    </head>
-    <body>
-        <div class="container">
-            <h1>Note Taking App</h1>
-            <form id="form" onsubmit="addNote(event)">
-                <input type="text" required id="title" value="" placeholder="Add a note title">
-                <input type="text" required id="contents" value="" placeholder="Add the note's contents">
-                <button type="submit" id="addNoteButton">Add Note</button>
-                <button type="button" id="saveNoteButton" hidden="true" onclick="saveEditedNote(event)">Save Note</button>
-            </form>
-            <ul id="noteList"></ul>
-            
-        </div>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="container">
+    <h1 >Welcome to My App</h1>
+    <div id="auth-buttons" class="button-container">
+      <!-- Buttons dynamically added -->
+    </div>
+  </div>
 
-        <script src="script.js"></script>
-    </body>
+  <script src="script.js"></script>
+</body>
 </html>
