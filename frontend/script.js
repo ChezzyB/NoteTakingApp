@@ -1,9 +1,13 @@
 // Program's purpose is to allow the user to make notes and save them in a persistent state
 const apiUrl = "http://localhost:5000/api/notes/"
+let editNoteID = "";
 
 async function getNotes(){
+    //Fetch all the notes from the database
     const response = await fetch(apiUrl);
     const notes = await response.json();
+
+    //Display all notes found in the database
     renderNotes(notes);
 }
 
@@ -11,6 +15,15 @@ function renderNotes(notes) {
     const noteList = document.getElementById('noteList');
     noteList.innerHTML = ''; //Clear the list
 
+    //Clear the input fields:
+    document.getElementById("title").value = ``;
+    document.getElementById("contents").value = ``;
+
+    //Show the Add Note button and hide the Save Note button
+    document.getElementById('addNoteButton').hidden = false;
+    document.getElementById('saveNoteButton').hidden = true;
+
+    //Go through all notes
     notes.forEach(note => {
         const li = document.createElement('li');
 
@@ -46,9 +59,12 @@ function renderNotes(notes) {
 
 async function addNote(event) {
     event.preventDefault();
+
+    //Get the Title and Contents of the new note to be added from the form's input fields
     const title = document.getElementById('title').value;
     const contents = document.getElementById('contents').value;
 
+    //Saving this new note's Title and Contents in the Database
     try{
         if (title && contents) {
             const response = await fetch(apiUrl, {
@@ -65,6 +81,8 @@ async function addNote(event) {
             await response.json();
             title.value = '';
             contents.value = '';
+
+            //Render all the notes after the note above has been added
             getNotes();
         }
     } catch (error) {
@@ -73,29 +91,59 @@ async function addNote(event) {
 }
 
 async function deleteNote(id) {
+    //Delete the selected note in the database using the given ID
     await fetch(`${apiUrl}/${id}`, {method : 'DELETE'});
     getNotes();
 }
 
 async function editNote(id, title, contents) {
-    //Hiding the add button and showing the save button
+    //Hiding the Add Note button and showing the Save Note button
     const addNoteButton = document.getElementById('addNoteButton');
     addNoteButton.hidden = true;
     const saveNoteButton = document.getElementById('saveNoteButton');
     saveNoteButton.hidden = false;
 
-    //Giving the note id to the saveNoteButton so when it is pressed it can save that note
-    //document.getElementById("saveNoteButton").id = note._id);
+    //Giving the note id to be edited to the global variable editNoteID
+    editNoteID = id;
 
     //Setting the input fields to the selected note's title and contents to allow for user editing
     document.getElementById("title").value = `${title}`;
     document.getElementById("contents").value = `${contents}`;
-
-
 }
 
-async function saveNote(event){
+async function saveEditedNote(event){
+    //Use the editNoteID global variable to save the note
+    event.preventDefault();
+    const title = document.getElementById('title').value;
+    const contents = document.getElementById('contents').value;
 
+    //Use the current note's ID to update it in the database
+    try{
+        if (title && contents && editNoteID) {
+            const response = await fetch(`${apiUrl}/${editNoteID}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({title, contents})
+            });
+            if (!response.ok){
+                const errorData = await response.json();
+                if(errorData){
+                    throw new Error(errorData.error)
+                }
+            }
+            await response.json();
+            title.value = '';
+            contents.value = '';
+            
+            //Set global note id to empty again as the edit is now saved
+            editNoteID = "";
+
+            //Render all the notes after the update to the note above
+            getNotes();
+        }
+    } catch (error) {
+        window.alert(error.message)
+    }
     
 }
 
