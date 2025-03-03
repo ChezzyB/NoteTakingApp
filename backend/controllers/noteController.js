@@ -3,10 +3,11 @@ const Note = require('../models/Note');
 //Create Note
 const createNote = async (req, res) => {
     try {
-        const {title, contents} = req.body; // Data from front end
+        const {title, contents, email} = req.body; // Data from front end
         const newNote = new Note({
             title, 
             contents,
+            email,
         });
         await newNote.save(); //save to database
         res.status(201).json(newNote);//create status to send back to the user in json format

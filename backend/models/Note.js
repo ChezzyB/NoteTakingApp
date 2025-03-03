@@ -18,6 +18,14 @@ const noteSchema = new mongoose.Schema({
         maxlength: [50, 'Text contents must be less than 50 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
+    //The User that owns this note
+    email: {
+        type: String,
+        required: ['Text contents cannot be empty'], //Validation for: Contents must be present
+        minlength: [5,'Text contents must be over 5 characters long'], //Validation for: Minimum length
+        maxlength: [50, 'Text contents must be less than 50 characters long'], //Validation for: Maximum length
+        trim: true, //Remove excess spaces
+    },
 }, {timestamps: true}); //Automatically add createdAt and updatedAt timestamps
 
 //Create a mongoose model for the Note schema
