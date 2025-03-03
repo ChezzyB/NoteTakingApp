@@ -1,3 +1,0 @@
-Welcome to the Note Taking App.
-
-Users may enter a title and contents of their notes and have them saved for later reference.

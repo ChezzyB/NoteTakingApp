@@ -5,7 +5,7 @@ const noteSchema = new mongoose.Schema({
     //Title of note
     title: {
         type: String,
-        required: [true, 'Text contents cannot be empty'], //Validation for: Contents must be present
+        required: [true, 'Text title cannot be empty'], //Validation for: Contents must be present
         minlength: [1,'Text title cannot be empty'], //Validation for: Minimum length
         maxlength: [25, 'Text title must be less than 25 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
@@ -14,16 +14,16 @@ const noteSchema = new mongoose.Schema({
     contents: {
         type: String,
         required: [true, 'Text contents cannot be empty'], //Validation for: Contents must be present
-        minlength: [5,'Text contents must be over 5 characters long'], //Validation for: Minimum length
+        minlength: [5,'Text contents must be 5 characters or longer'], //Validation for: Minimum length
         maxlength: [50, 'Text contents must be less than 50 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
     //The User that owns this note
     email: {
         type: String,
-        required: ['Text contents cannot be empty'], //Validation for: Contents must be present
-        minlength: [5,'Text contents must be over 5 characters long'], //Validation for: Minimum length
-        maxlength: [50, 'Text contents must be less than 50 characters long'], //Validation for: Maximum length
+        required: ['Email contents cannot be empty'], //Validation for: Contents must be present
+        minlength: [5,'Email contents must be 5 characters or longer'], //Validation for: Minimum length
+        maxlength: [50, 'Email contents must be less than 50 characters long'], //Validation for: Maximum length
         trim: true, //Remove excess spaces
     },
 }, {timestamps: true}); //Automatically add createdAt and updatedAt timestamps
