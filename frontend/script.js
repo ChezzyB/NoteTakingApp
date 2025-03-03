@@ -2,6 +2,7 @@
 const apiNoteUrl = "http://localhost:5000/api/notes/";
 const apiAuthUrl = 'http://localhost:5000/api/auths';
 let editNoteID = "";
+let currentEmail = "";
 
 async function getNotes(){
     
@@ -11,12 +12,12 @@ async function getNotes(){
         const response = await fetch(apiNoteUrl);
         const notes = await response.json();
 
-        //Display all notes found in the database
-        renderNotes(notes);
+        //Display all notes found in the database that match a user's given email
+        renderNotes(notes,currentEmail);
     }
 }
 
-function renderNotes(notes) {
+function renderNotes(notes, email) {
     const noteList = document.getElementById('noteList');
     noteList.innerHTML = ''; //Clear the list
 
@@ -30,6 +31,7 @@ function renderNotes(notes) {
 
     //Go through all notes
     notes.forEach(note => {
+      if (note.email === email) {
         const li = document.createElement('li');
 
         // Create span for the title
@@ -59,6 +61,7 @@ function renderNotes(notes) {
 
         //Append the list item to the note list
         noteList.appendChild(li);
+      }
     });
 }
 
@@ -68,14 +71,15 @@ async function addNote(event) {
     //Get the Title and Contents of the new note to be added from the form's input fields
     const title = document.getElementById('title').value;
     const contents = document.getElementById('contents').value;
+    const email = currentEmail;
 
-    //Saving this new note's Title and Contents in the Database
+    //Saving this new note's Title and Contents in the Database with the assocciated User's email
     try{
         if (title && contents) {
             const response = await fetch(apiNoteUrl, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
-                body: JSON.stringify({title, contents})
+                body: JSON.stringify({title, contents, email})
             });
             if (!response.ok){
                 const errorData = await response.json();
@@ -165,7 +169,7 @@ const checkAuth = () => {
       authButtons.innerHTML = `
         <button onclick="logout()">Logout</button>
       `;
-      fetchWelcomeMessage()
+      //fetchWelcomeMessage()
       //Send the user to the notes page as they are now logged in
       window.location.href = 'note.html';
     } else {
@@ -178,25 +182,31 @@ const checkAuth = () => {
   
   // Login functionality
   if (document.title === 'Login') {
-    document.getElementById('login-form').addEventListener('submit', async (e) => {
+    document.getElementById('login-form').addEventListener('submit', async (e) => {      
       e.preventDefault();
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
-  
-      // Replace with your backend API endpoint
+      
+      currentEmail = document.getElementById('email').value;
+
+      //Check the token stored on the client side matches the token in the Database for that User
       const response = await fetch(`${apiAuthUrl}/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password }),
-      });
-  
+      });  
       const data = await response.json();
       const message = document.getElementById('message');
-      if (response.ok) {
+      if (response.ok) { //token on client side matches database token
         localStorage.setItem('token', data.token);
+
+        //Saving email variable so that the notes page can pull up only those notes associated with this email
+        localStorage.setItem('email', currentEmail);
+                
+        //Send user to Note page
         message.textContent = 'Login successful! Redirecting...';
-        setTimeout(() => (window.location.href = 'index.html'), 1500);
-      } else {
+        setTimeout(() => (window.location.href = 'note.html'), 1000);
+      } else { //token on client side does not match database token
         message.textContent = data.error || 'Login failed.';
       }
     });
@@ -259,15 +269,32 @@ const checkAuth = () => {
   
   // Client-side logout function
   const logout = () => {
-    // Remove the token from localStorage
+    // Remove the token and email from localStorage
     localStorage.removeItem('token');
+    localStorage.removeItem('email');
   
     // Optionally show a success message
     alert('Logged out successfully!');
+
+    //Clear global variables
+    //currentEmail = "";
+    editNoteID = "";
   
     // Redirect to the home or login page
     window.location.href = 'index.html'; 
   };
 
+  if (document.title === 'Note') {
+    if (checkAuth()) {
+      //Retreive current logged in user's email and store it in the global variable
+      currentEmail = localStorage.getItem('email');
+      //fetchWelcomeMessage()
+      //Render the notes
+      getNotes();
+    } else {
+      window.location.href = 'index.html'; 
+    }
+  }
 
-window.onload = getNotes();
+
+//window.onload = getNotes();

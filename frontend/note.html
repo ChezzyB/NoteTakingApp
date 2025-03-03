@@ -2,13 +2,14 @@
 <html land="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, intital-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Note</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div class="noteContainer">
             <h1>Note Taking App</h1>
+            <button onclick="logout()">Logout</button>
             <form id="form" onsubmit="addNote(event)">
                 <input type="text" required id="title" value="" placeholder="Add a note title">
                 <input type="text" required id="contents" value="" placeholder="Add the note's contents">
