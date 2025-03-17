@@ -115,9 +115,6 @@ This application allows you to create multiple users, login with a user's detail
 
 ## Notes
 
-- Ensure that you enter the correct city name. Typos may cause the weather data to be unavailable.
-- The app will display the weather based on the most up-to-date information available at the time.
-
 Enjoy using the Note Taking App!
 
 
